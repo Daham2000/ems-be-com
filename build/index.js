@@ -27,27 +27,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv = __importStar(require("dotenv"));
+const connectDB_1 = __importDefault(require("./util/connectDB"));
 dotenv.config();
 const app = (0, express_1.default)();
-const port = 3000;
+const port = process.env.APP_PORT;
 app.get("/", (req, res) => {
     res.send("Hello world...");
 });
-const url = `mongodb+srv://Daham:3qweEWQ2@cluster0.8dcca.mongodb.net/?retryWrites=true&w=majority`;
-const connectionParams = {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-};
-mongoose_1.default.connect(process.env.APP_DBURL || "")
-    .then(() => {
-    console.log('Connected to the database ');
-})
-    .catch((err) => {
-    console.error(`Error connecting to the database. n${err}`);
-});
 app.listen(port, () => {
     console.log("Connected successfully...");
+    (0, connectDB_1.default)();
 });
