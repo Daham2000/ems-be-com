@@ -1,7 +1,7 @@
 import express from "express";
 import * as dotenv from 'dotenv';
 import ConnectDb from "./util/connectDB";
-import bookRoutes from './routes/BookRoutes';
+import orgRoutes from './routes/OrganizationRoutes';
 
 dotenv.config()
 
@@ -13,7 +13,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Hello world...");
 });
-app.use('/books', bookRoutes);
+app.use('', orgRoutes);
 
 app.listen(port, () => {
     console.log("Connected successfully...");
