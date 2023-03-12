@@ -36,5 +36,19 @@ export const Schemas = {
             email: Joi.string().required(),
             image: Joi.string().required()
         })
+    },
+    performance: {
+        add: Joi.object<any>({
+            empID: Joi.string().required(),
+            month: Joi.string().required(),
+            year: Joi.number().required(),
+            qualityOfWork: Joi.number().required(),
+            speedRate: Joi.number().required(),
+            trustRate: Joi.number().required(),
+            givenTargets: Joi.number().required(),
+            achivedTargets: Joi.number().required(),
+            description: Joi.string().required(),
+            overviewRate: Joi.number().required()
+        })
     }
 };
