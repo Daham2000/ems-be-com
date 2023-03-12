@@ -7,3 +7,10 @@ export const addEmployeeService = (employee: Document) => {
         .then((res) => { return StatusCode.CREATED; })
         .catch((error) => { return error; });
 };
+
+export const addPerformanceReportService = (report: Document) => {
+    return report
+        .save()
+        .then((res) => { return StatusCode.CREATED; })
+        .catch((error) => { return error; });
+};

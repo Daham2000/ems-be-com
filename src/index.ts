@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import ConnectDb from "./util/connectDB";
 import orgRoutes from './routes/OrganizationRoutes';
 import empRoutes from './routes/EmployeeRoutes';
+import perRoutes from './routes/PerformanceRoutes';
 
 dotenv.config()
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 app.use('', orgRoutes);
 app.use('/employee', empRoutes);
+app.use('/performance-report', perRoutes);
 
 app.listen(port, () => {
     console.log("Connected successfully...");
