@@ -2,6 +2,7 @@ import express from "express";
 import * as dotenv from 'dotenv';
 import ConnectDb from "./util/connectDB";
 import orgRoutes from './routes/OrganizationRoutes';
+import empRoutes from './routes/EmployeeRoutes';
 
 dotenv.config()
 
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
     res.send("Hello world...");
 });
 app.use('', orgRoutes);
+app.use('/employee', empRoutes);
 
 app.listen(port, () => {
     console.log("Connected successfully...");

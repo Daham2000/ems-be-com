@@ -19,5 +19,22 @@ export const Schemas = {
             tag: Joi.string().required(),
             email: Joi.string().required()
         })
+    },
+    employee: {
+        add: Joi.object<any>({
+            name: Joi.string().required(),
+            passwordHash: Joi.string().required(),
+            userName: Joi.string().required(),
+            address: Joi.string().required(),
+            nic: Joi.string().required(),
+            userRole: Joi.string().required(),
+            joinedDate: Joi.string().required(),
+            isAvailable: Joi.boolean().required(),
+            jobTitle: Joi.string().required(),
+            birthDay: Joi.string().required(),
+            contactNum: Joi.number().required(),
+            email: Joi.string().required(),
+            image: Joi.string().required()
+        })
     }
 };
