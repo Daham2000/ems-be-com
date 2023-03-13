@@ -2,8 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
+import IMotivationRequest from '../db/schemas/MotivationSchema';
 import { addEmployeeService, addPerformanceReportService } from '../db/services/EmployeeServices';
+import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
+import { uuid } from 'uuidv4';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -62,3 +65,23 @@ export const addPerformance = async (req: Request, res: Response, next: NextFunc
         return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
     }
 };
+
+export const addMotivationRequest = async (req: Request, res: Response, next: NextFunction) => {
+    const { empId, description } = req.body;
+
+    const request = new IMotivationRequest({
+        _id: new mongoose.Types.ObjectId(),
+        reqId: "req0_" + uuid(),
+        empId,
+        description
+    });
+
+    const result = await addMotivationReqService(request);
+
+    if (result === StatusCode.CREATED) {
+        return res.status(StatusCode.CREATED).json({ "success": "ok" });
+    } else {
+        const error = ValidateErrorRegisterOrg(result);
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+    }
+}

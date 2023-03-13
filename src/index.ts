@@ -4,6 +4,9 @@ import ConnectDb from "./util/connectDB";
 import orgRoutes from './routes/OrganizationRoutes';
 import empRoutes from './routes/EmployeeRoutes';
 import perRoutes from './routes/PerformanceRoutes';
+import hoRoutes from './routes/HolidayRoutes';
+import motivationRoutes from './routes/MotivationRoutes';
+import AnnouncementRoutes from './routes/AnnouncementRoutes';
 
 dotenv.config()
 
@@ -18,6 +21,9 @@ app.get("/", (req, res) => {
 app.use('', orgRoutes);
 app.use('/employee', empRoutes);
 app.use('/performance-report', perRoutes);
+app.use('/holidays', hoRoutes);
+app.use('/motivation-add', motivationRoutes);
+app.use('/', AnnouncementRoutes);
 
 app.listen(port, () => {
     console.log("Connected successfully...");

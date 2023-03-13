@@ -14,3 +14,10 @@ export const addPerformanceReportService = (report: Document) => {
         .then((res) => { return StatusCode.CREATED; })
         .catch((error) => { return error; });
 };
+
+export const addMotivationReqService = (motiReq: Document) => {
+    return motiReq
+        .save()
+        .then((res) => { return StatusCode.CREATED; })
+        .catch((error) => { return error; });
+};
