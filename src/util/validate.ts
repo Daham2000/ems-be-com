@@ -50,5 +50,11 @@ export const Schemas = {
             description: Joi.string().required(),
             overviewRate: Joi.number().required()
         })
+    },
+    holiday: {
+        add: Joi.object<any>({
+            holidayTitle: Joi.string().required(),
+            eventDate: Joi.string().required()
+        })
     }
 };
