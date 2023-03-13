@@ -56,5 +56,20 @@ export const Schemas = {
             holidayTitle: Joi.string().required(),
             eventDate: Joi.string().required()
         })
+    },
+    motivation: {
+        add: Joi.object<any>({
+            empId: Joi.string().required(),
+            description: Joi.string().required()
+        })
+    },
+    announcement: {
+        add: Joi.object<any>({
+            announcementTitle: Joi.string().required(),
+            date: Joi.string().required(),
+            sendBy: Joi.string().required(),
+            sendTo: Joi.string().required(),
+            message: Joi.string().required()
+        })
     }
 };
