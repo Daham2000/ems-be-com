@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, getEmployeeService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -11,6 +11,11 @@ import { uuid } from 'uuidv4';
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
         result.keyPattern.nic ? { "message": "NIC can't be duplicate" } : "";
+};
+
+export const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
+    const list = await getEmployeeService();
+    return res.status(StatusCode.SUCCESS).json(list);
 };
 
 export const addEmployee = async (req: Request, res: Response, next: NextFunction) => {
