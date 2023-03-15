@@ -5,7 +5,15 @@ import IEmployee from '../../db/schemas/EmployeeSchema';
 export const addEmployeeService = (employee: Document) => {
     return employee
         .save()
-        .then((res) => { return StatusCode.CREATED; })
+        .then((res) => {
+         return StatusCode.CREATED; })
+        .catch((error) => { return error; });
+};
+
+export const updateEmployeeService = (employee: any) => {
+    return IEmployee
+        .updateOne(employee)
+        .then((res) => { return StatusCode.SUCCESS; })
         .catch((error) => { return error; });
 };
 
