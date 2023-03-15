@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, getEmployeeService, updateEmployeeService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, updateEmployeeService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -82,6 +82,17 @@ export const updateEmployee = async (req: Request, res: Response, next: NextFunc
         return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ result });
     }
 };
+
+export const deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    const empID = req.query.empID;    
+    const result = await deleteEmployeeService(empID?.toString() ? empID?.toString() : "");
+    if (result === StatusCode.SUCCESS) {
+        return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
+    } else {
+        const error = ValidateErrorRegisterOrg(result);
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+    }
+}
 
 export const addPerformance = async (req: Request, res: Response, next: NextFunction) => {
     const { empID, month, year, qualityOfWork, speedRate,

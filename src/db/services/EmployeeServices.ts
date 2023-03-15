@@ -17,6 +17,13 @@ export const updateEmployeeService = (employee: any) => {
         .catch((error) => { return error; });
 };
 
+export const deleteEmployeeService = (empID: string) => {    
+    return IEmployee
+        .deleteOne({empID})
+        .then((res) => { return StatusCode.SUCCESS; })
+        .catch((error) => { return error; });
+};
+
 export const getEmployeeService = () => {
     return IEmployee.find().then((res) => {
         return res;
