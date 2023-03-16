@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, getPerformanceReportService, updateEmployeeService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, getPerformanceReportService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -52,9 +52,9 @@ export const addEmployee = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const { _id, name, orgID,empID, passwordHash, userName, address, nic,
+    const { _id, name, orgID, empID, passwordHash, userName, address, nic,
         userRole, joinedDate, isAvailable, jobTitle, birthDay, contactNum, email, image } = req.body;
-    
+
     const employee = {
         _id,
         name,
@@ -84,7 +84,7 @@ export const updateEmployee = async (req: Request, res: Response, next: NextFunc
 };
 
 export const deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const empID = req.query.empID;    
+    const empID = req.query.empID;
     const result = await deleteEmployeeService(empID?.toString() ? empID?.toString() : "");
     if (result === StatusCode.SUCCESS) {
         return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
@@ -117,6 +117,25 @@ export const addPerformance = async (req: Request, res: Response, next: NextFunc
 export const getPerformanceReportList = async (req: Request, res: Response, next: NextFunction) => {
     const list = await getPerformanceReportService();
     return res.status(StatusCode.SUCCESS).json(list);
+};
+
+export const updatePerformanceReport = async (req: Request, res: Response, next: NextFunction) => {
+    const { _id, empID, month, year, qualityOfWork, speedRate,
+        trustRate, givenTargets, achivedTargets, description, overviewRate } = req.body;
+
+    const employee = {
+        _id,
+        perId: empID + "_" + month + year, year, empID, month, qualityOfWork, speedRate,
+        trustRate, givenTargets, achivedTargets, description, overviewRate
+    };
+
+    const result = await updatePerformanceReportService(employee);
+
+    if (result === StatusCode.SUCCESS) {
+        return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
+    } else {
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ result });
+    }
 };
 
 export const addMotivationRequest = async (req: Request, res: Response, next: NextFunction) => {

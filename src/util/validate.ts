@@ -67,6 +67,22 @@ export const Schemas = {
             achivedTargets: Joi.number().required(),
             description: Joi.string().required(),
             overviewRate: Joi.number().required()
+        }),
+        update: Joi.object<any>({
+            empID: Joi.string().required(),
+            perId: Joi.string().required(),
+            createdAt: Joi.string().required(),
+            updatedAt: Joi.string().required(),
+            _id: Joi.string().required(),
+            month: Joi.string().required(),
+            year: Joi.number().required(),
+            qualityOfWork: Joi.number().required(),
+            speedRate: Joi.number().required(),
+            trustRate: Joi.number().required(),
+            givenTargets: Joi.number().required(),
+            achivedTargets: Joi.number().required(),
+            description: Joi.string().required(),
+            overviewRate: Joi.number().required()
         })
     },
     holiday: {
