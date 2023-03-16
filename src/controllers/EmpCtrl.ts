@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, updateEmployeeService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, getPerformanceReportService, updateEmployeeService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -112,6 +112,11 @@ export const addPerformance = async (req: Request, res: Response, next: NextFunc
         const error = ValidateErrorRegisterOrg(result);
         return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
     }
+};
+
+export const getPerformanceReportList = async (req: Request, res: Response, next: NextFunction) => {
+    const list = await getPerformanceReportService();
+    return res.status(StatusCode.SUCCESS).json(list);
 };
 
 export const addMotivationRequest = async (req: Request, res: Response, next: NextFunction) => {
