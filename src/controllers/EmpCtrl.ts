@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, getEmployeeService, getPerformanceReportService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, deletePerformanceReportService, getEmployeeService, getPerformanceReportService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -82,6 +82,18 @@ export const updateEmployee = async (req: Request, res: Response, next: NextFunc
         return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ result });
     }
 };
+
+export const deletePerformanceReport = async (req: Request, res: Response, next: NextFunction) => {
+    const empID = req.query.empID;
+    const perId = req.query.perId;
+
+    try {
+        await deletePerformanceReportService(empID?.toString(), perId?.toString());
+        return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
+    } catch (e) {
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error: e });
+    }
+}
 
 export const deleteEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const empID = req.query.empID;

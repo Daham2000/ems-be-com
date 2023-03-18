@@ -47,7 +47,7 @@ export const updatePerformanceReportService = (report: any) => {
         .catch((error) => { return error; });
 };
 
-export const deletePerformanceReportService = (pId: string) => {    
+export const deletePerformanceReportService = (empID?: string, pId?: string) => {        
     return IPerformance
         .deleteOne({pId})
         .then((res) => { return StatusCode.SUCCESS; })
