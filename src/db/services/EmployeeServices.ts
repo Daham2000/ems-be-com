@@ -8,7 +8,8 @@ export const addEmployeeService = (employee: Document) => {
     return employee
         .save()
         .then((res) => {
-         return StatusCode.CREATED; })
+            return StatusCode.CREATED;
+        })
         .catch((error) => { return error; });
 };
 
@@ -19,9 +20,9 @@ export const updateEmployeeService = (employee: any) => {
         .catch((error) => { return error; });
 };
 
-export const deleteEmployeeService = (empID: string) => {    
+export const deleteEmployeeService = (empID: string) => {
     return IEmployee
-        .deleteOne({empID})
+        .deleteOne({ empID })
         .then((res) => { return StatusCode.SUCCESS; })
         .catch((error) => { return error; });
 };
@@ -33,11 +34,17 @@ export const getEmployeeService = () => {
 };
 
 //Performance report services section
-export const addPerformanceReportService = (report: Document) => {
-    return report
-        .save()
-        .then((res) => { return StatusCode.CREATED; })
-        .catch((error) => { return error; });
+export const addPerformanceReportService = async (report: any): Promise<number> => {
+    try {
+        const docs = await IPerformance.find({ empID: report.empID, year: report.year, month: report.month });
+        if (docs.length > 0) {
+            return StatusCode.DATA_VALIDATION_ERROR;
+        }
+        await IPerformance.create(report);
+        return StatusCode.CREATED;
+    } catch (e) {
+        return StatusCode.DATA_VALIDATION_ERROR;
+    }
 };
 
 export const updatePerformanceReportService = (report: any) => {
@@ -47,15 +54,15 @@ export const updatePerformanceReportService = (report: any) => {
         .catch((error) => { return error; });
 };
 
-export const deletePerformanceReportService = (empID?: string, pId?: string) => {        
+export const deletePerformanceReportService = (empID?: string, pId?: string) => {
     return IPerformance
-        .deleteOne({pId})
+        .deleteOne({ pId })
         .then((res) => { return StatusCode.SUCCESS; })
         .catch((error) => { return error; });
 };
 
-export const getPerformanceReportService = () => {
-    return IPerformance.find().then((res) => {
+export const getPerformanceReportService = (empID: string) => {
+    return IPerformance.find({ empID }).then((res) => {
         return res;
     }).catch((error) => { return error; });
 };

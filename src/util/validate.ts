@@ -65,8 +65,7 @@ export const Schemas = {
             trustRate: Joi.number().required(),
             givenTargets: Joi.number().required(),
             achivedTargets: Joi.number().required(),
-            description: Joi.string().required(),
-            overviewRate: Joi.number().required()
+            description: Joi.string().required()
         }),
         update: Joi.object<any>({
             empID: Joi.string().required(),
@@ -81,8 +80,7 @@ export const Schemas = {
             trustRate: Joi.number().required(),
             givenTargets: Joi.number().required(),
             achivedTargets: Joi.number().required(),
-            description: Joi.string().required(),
-            overviewRate: Joi.number().required()
+            description: Joi.string().required()
         })
     },
     holiday: {
