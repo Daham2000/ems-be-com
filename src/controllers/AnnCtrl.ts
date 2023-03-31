@@ -4,6 +4,7 @@ import { uuid } from 'uuidv4';
 import IAnnouncementModel from '../db/schemas/AnnouncementSchema';
 import { addAnnouncementService } from '../db/services/AnnouncementService';
 import { StatusCode } from '../util/statusCode';
+import validateUserToken from '../util/validateUser';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :

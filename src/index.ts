@@ -28,4 +28,10 @@ app.use('/', AnnouncementRoutes);
 app.listen(port, () => {
     console.log("Connected successfully...");
     ConnectDb();
+
+    // Initialize the default app
+    let admin = require('firebase-admin');
+    let app = admin.initializeApp({
+        credential: admin.credential.cert("D:/Esoft/Project/ems-pro-com-0666f055e874.json")
+    });
 });
