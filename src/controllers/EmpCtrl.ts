@@ -108,27 +108,34 @@ export const deleteEmployee = async (req: Request, res: Response, next: NextFunc
 
 export const addPerformance = async (req: Request, res: Response, next: NextFunction) => {
     const { empID, month, year, qualityOfWork, speedRate,
-        trustRate, givenTargets, achivedTargets, description, overviewRate } = req.body;
+        trustRate, givenTargets, achivedTargets, description } = req.body;
 
-    const report = new IPerformance({
+    const overviewRate = speedRate + trustRate + qualityOfWork;
+
+    const report = {
         _id: new mongoose.Types.ObjectId(),
         perId: empID + "_" + month + year, year, empID, month, qualityOfWork, speedRate,
         trustRate, givenTargets, achivedTargets, description, overviewRate
-    });
+    };
 
     const result = await addPerformanceReportService(report);
 
     if (result === StatusCode.CREATED) {
         return res.status(StatusCode.CREATED).json({ "success": "ok" });
     } else {
-        const error = ValidateErrorRegisterOrg(result);
-        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ "error" : result });
     }
+
 };
 
 export const getPerformanceReportList = async (req: Request, res: Response, next: NextFunction) => {
-    const list = await getPerformanceReportService();
-    return res.status(StatusCode.SUCCESS).json(list);
+    const empID = req.query.empID ?? "";
+    try {
+        const list = await getPerformanceReportService(empID.toString());
+        return res.status(StatusCode.SUCCESS).json(list);
+    } catch (e) {
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ "error": e });
+    }
 };
 
 export const updatePerformanceReport = async (req: Request, res: Response, next: NextFunction) => {

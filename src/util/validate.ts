@@ -1,8 +1,18 @@
 import Joi, { ObjectSchema } from 'joi';
 import { NextFunction, Request, Response } from 'express';
+import validateUserToken from './validateUser';
 
 export const ValidateJoi = (schema: ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
+        if (!req.headers.authorization) {
+            return res.status(401).json({ error: 'unauthenticated' });
+        }
+        const token = req.headers.authorization.split(' ')[1];
+
+        const validationRes = validateUserToken(token);
+        if (validationRes === 401) {
+            return res.status(401).json({ error: 'unauthenticated' });
+        }
         try {
             await schema.validateAsync(req.body);
             next();
@@ -65,8 +75,7 @@ export const Schemas = {
             trustRate: Joi.number().required(),
             givenTargets: Joi.number().required(),
             achivedTargets: Joi.number().required(),
-            description: Joi.string().required(),
-            overviewRate: Joi.number().required()
+            description: Joi.string().required()
         }),
         update: Joi.object<any>({
             empID: Joi.string().required(),
@@ -81,8 +90,7 @@ export const Schemas = {
             trustRate: Joi.number().required(),
             givenTargets: Joi.number().required(),
             achivedTargets: Joi.number().required(),
-            description: Joi.string().required(),
-            overviewRate: Joi.number().required()
+            description: Joi.string().required()
         })
     },
     holiday: {
