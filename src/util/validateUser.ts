@@ -1,18 +1,13 @@
 import { auth } from "firebase-admin";
 
 const validateUserToken = (token: string): number => {
-  auth()
-    .verifyIdToken(token)
-    .then((res) => {
-      console.log(res);
-      return 200;
-    })
-    .catch((error) => {
-      console.log(error);
-      
-      return 401;
-    });
+  try {
+    auth()
+      .verifyIdToken(token);
     return 200;
+  } catch (e: any) {
+    return 401;
+  }
 };
 
 export default validateUserToken;
