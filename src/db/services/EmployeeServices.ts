@@ -33,6 +33,16 @@ export const getEmployeeService = () => {
     }).catch((error) => { return error; });
 };
 
+export const getEmployeeEmailListService = (orgID: string) => {
+    let list = [];
+    return IEmployee.find({orgID}, {"email": 1, "_id": 0}).then((res) => {
+        list = res.map((element: any) => {
+            return element.email;
+        })
+        return list;
+    }).catch((error) => { return error; });
+};
+
 //Performance report services section
 export const addPerformanceReportService = async (report: any): Promise<number> => {
     try {

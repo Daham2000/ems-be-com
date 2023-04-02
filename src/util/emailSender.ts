@@ -8,10 +8,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendEmail = (subject: string, template: any, email: string) => {
+const sendEmail = (subject: string, template: any, email: string[]) => {
     const mailOptions = {
         from: 'courseworkt810@gmail.com',
-        to: email,
+        to: email.toString(),
         subject: subject,
         html: template,
         text: 'That was easy!'

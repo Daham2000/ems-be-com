@@ -1,13 +1,14 @@
 import { auth } from "firebase-admin";
 
-const validateUserToken = (token: string): number => {
+const validateUserToken = async (token: string): Promise<number> => {
   try {
-    auth()
+    await auth()
       .verifyIdToken(token);
     return 200;
   } catch (e: any) {
     return 401;
   }
+
 };
 
 export default validateUserToken;
