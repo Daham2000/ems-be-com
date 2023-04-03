@@ -27,9 +27,29 @@ export const deleteEmployeeService = (empID: string) => {
         .catch((error) => { return error; });
 };
 
-export const getEmployeeService = () => {
-    return IEmployee.find().then((res) => {
+export const getEmployeeService = (orgID: string) => {
+    return IEmployee.find({orgID}).then((res) => {
         return res;
+    }).catch((error) => { return error; });
+};
+
+export const getEmployeeEmailListService = (orgID: string) => {
+    let list = [];
+    return IEmployee.find({ orgID }, { "email": 1, "_id": 0 }).then((res) => {
+        list = res.map((element: any) => {
+            return element.email;
+        })
+        return list;
+    }).catch((error) => { return error; });
+};
+
+export const getEmployeeNumberListService = (orgID: string): any => {
+    let list = [];
+    return IEmployee.find({ orgID }, { "contactNum": 1, "_id": 0 }).then((res) => {
+        list = res.map((element: any) => {
+            return element.email;
+        })
+        return list;
     }).catch((error) => { return error; });
 };
 

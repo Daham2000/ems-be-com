@@ -7,6 +7,7 @@ import { addEmployeeService, addPerformanceReportService, deleteEmployeeService,
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
+import { decodeToken } from '../util/decodeToken';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -14,7 +15,11 @@ export const ValidateErrorRegisterOrg = (result: any) => {
 };
 
 export const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
-    const list = await getEmployeeService();
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = decodeToken(token ?? "");
+    const orgId = decoded.orgId;
+
+    const list = await getEmployeeService(orgId ?? "");
     return res.status(StatusCode.SUCCESS).json(list);
 };
 
@@ -22,10 +27,14 @@ export const addEmployee = async (req: Request, res: Response, next: NextFunctio
     const { name, passwordHash, userName, address, nic,
         userRole, joinedDate, isAvailable, jobTitle, birthDay, contactNum, email, image } = req.body;
 
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = decodeToken(token ?? "");
+    const orgID = decoded.orgId;
+
     const employee = new IEmployee({
         _id: new mongoose.Types.ObjectId(),
         name,
-        orgID: "o0011",
+        orgID,
         empID: "E0_" + nic,
         passwordHash,
         userName,
@@ -52,8 +61,12 @@ export const addEmployee = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const updateEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const { _id, name, orgID, empID, passwordHash, userName, address, nic,
+    const { _id, name, empID, passwordHash, userName, address, nic,
         userRole, joinedDate, isAvailable, jobTitle, birthDay, contactNum, email, image } = req.body;
+
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = decodeToken(token ?? "");
+    const orgID = decoded.orgId;
 
     const employee = {
         _id,
@@ -123,7 +136,7 @@ export const addPerformance = async (req: Request, res: Response, next: NextFunc
     if (result === StatusCode.CREATED) {
         return res.status(StatusCode.CREATED).json({ "success": "ok" });
     } else {
-        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ "error" : result });
+        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ "error": result });
     }
 
 };

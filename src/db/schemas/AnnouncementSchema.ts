@@ -10,7 +10,7 @@ const AnnouncementSchema: Schema = new Schema(
         message: { type: String, required: true },
         sendBy: { type: String, required: true },
         sendTo: { type: Array, required: true },
-        orgId: { type: Array, required: true },
+        orgId: { type: String, required: true },
         date: { type: String, required: true }
     },
     {
