@@ -99,6 +99,8 @@ export const Schemas = {
         add: Joi.object<any>({
             holidayTitle: Joi.string().required(),
             eventDate: Joi.string().required()
+        }),
+        get: Joi.object<any>({
         })
     },
     motivation: {
