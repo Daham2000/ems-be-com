@@ -15,7 +15,11 @@ export const ValidateErrorRegisterOrg = (result: any) => {
 };
 
 export const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
-    const list = await getEmployeeService();
+    const token = req.headers.authorization?.split(' ')[1];
+    const decoded = decodeToken(token ?? "");
+    const orgId = decoded.orgId;
+
+    const list = await getEmployeeService(orgId ?? "");
     return res.status(StatusCode.SUCCESS).json(list);
 };
 

@@ -4,12 +4,12 @@ import validateUserToken from './validateUser';
 
 export const ValidateJoi = (schema: ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        if(schema !== Schemas.organization.create) {
+        if (schema !== Schemas.organization.create) {
             if (!req.headers.authorization) {
                 return res.status(401).json({ error: 'unauthenticated' });
             }
             const token = req.headers.authorization.split(' ')[1];
-    
+
             const validationRes = await validateUserToken(token);
             if (validationRes === 401) {
                 return res.status(401).json({ error: 'unauthenticated' });
@@ -114,6 +114,9 @@ export const Schemas = {
             sendBy: Joi.string().required(),
             sendTo: Joi.string().required(),
             message: Joi.string().required()
+        }),
+        get: Joi.object<any>({
+
         })
     }
 };
