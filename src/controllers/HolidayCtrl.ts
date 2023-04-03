@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import IHolidayModel from '../db/schemas/HolidaySchema';
-import { addHolidayService } from '../db/services/HolidayServices';
+import { addHolidayService, getHolidayService } from '../db/services/HolidayServices';
 import { StatusCode } from '../util/statusCode';
+import { decodeToken } from '../util/decodeToken';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -10,22 +11,44 @@ export const ValidateErrorRegisterOrg = (result: any) => {
 };
 
 export const addHoliday = async (req: Request, res: Response, next: NextFunction) => {
-    const { holidayTitle, eventDate } = req.body;
+    try {
+        const { holidayTitle, eventDate } = req.body;
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgId = decoded.orgId;
 
-    const holiday = new IHolidayModel({
-        _id: new mongoose.Types.ObjectId(),
-        holiId: "HOLI0_" + holidayTitle,
-        holidayTitle,
-        eventDate,
-        orgId: "ORG"
-    });
+        const _id = new mongoose.Types.ObjectId();
+        const holiId = "HOLI" + _id.toString().substring(1, 10);
+        const holiday = new IHolidayModel({
+            _id,
+            holiId,
+            holidayTitle,
+            eventDate,
+            orgId
+        });
 
-    const result = await addHolidayService(holiday);
+        const result = await addHolidayService(holiday);
 
-    if (result === StatusCode.CREATED) {
-        return res.status(StatusCode.CREATED).json({ "success": "ok" });
-    } else {
-        const error = ValidateErrorRegisterOrg(result);
-        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+        if (result === StatusCode.CREATED) {
+            return res.status(StatusCode.CREATED).json({ "success": "ok" });
+        } else {
+            const error = ValidateErrorRegisterOrg(result);
+            return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+        }
+    } catch (e) {
+        return res.status(StatusCode.FAILED).json({ e });
+    }
+};
+
+export const getHolidayList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgId = decoded.orgId;
+
+        const holidayList = await getHolidayService(orgId ?? "");
+        return res.status(StatusCode.SUCCESS).json({ holidayList });
+    } catch (e: any) {
+        return res.status(StatusCode.FAILED).json({ e });
     }
 };
