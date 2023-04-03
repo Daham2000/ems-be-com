@@ -51,6 +51,59 @@ const registerOrganizationTemplate = (organization_name: string, email: string, 
     </html>`;
 };
 
+const employeeCreationTemplate = (organization_name: string, email: string, password: string) => {
+  return `<!DOCTYPE html>
+    <html>
+      <head>
+        <title>You have been added to Organization ${organization_name}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+          }
+    
+          h1 {
+            font-size: 24px;
+            margin-top: 0;
+          }
+    
+          p {
+            margin-bottom: 1em;
+          }
+    
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+          }
+    
+          .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 1em;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Account Created</h1>
+          <p>You have been added to Organization ${organization_name}</p>
+          <p>Here are the details:</p>
+          <ul>
+            <li><strong>Name:</strong> ${organization_name}</li>
+            <li><strong>Email of your account:</strong> ${email}</li>
+            <li><strong>Password of your account:</strong> ${password}</li>
+          </ul>
+          <p>Thank you for using our service!</p>
+        </div>
+      </body>
+    </html>`;
+};
+
 const announcmentTemplate = (announcementTitle: string, message: string, orgName: string) => {
   return `<!DOCTYPE html>
   <html>
@@ -98,4 +151,4 @@ const announcmentTemplate = (announcementTitle: string, message: string, orgName
   </html>`;
 };
 
-export { registerOrganizationTemplate, announcmentTemplate };
+export { registerOrganizationTemplate, announcmentTemplate, employeeCreationTemplate };

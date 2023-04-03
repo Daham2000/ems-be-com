@@ -8,6 +8,9 @@ import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
 import { decodeToken } from '../util/decodeToken';
+import { addAdminUserService } from '../db/services/ManageUserService';
+import sendEmail from '../util/emailSender';
+import { employeeCreationTemplate } from '../util/emailTemplates';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -24,39 +27,52 @@ export const getEmployeeList = async (req: Request, res: Response, next: NextFun
 };
 
 export const addEmployee = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, passwordHash, userName, address, nic,
-        userRole, joinedDate, isAvailable, jobTitle, birthDay, contactNum, email, image } = req.body;
+    try {
+        const { name, passwordHash, userName, address, nic,
+            userRole, joinedDate, isAvailable, jobTitle, birthDay, contactNum, email, image } = req.body;
 
-    const token = req.headers.authorization?.split(' ')[1];
-    const decoded = decodeToken(token ?? "");
-    const orgID = decoded.orgId;
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgID = decoded.orgId;
 
-    const employee = new IEmployee({
-        _id: new mongoose.Types.ObjectId(),
-        name,
-        orgID,
-        empID: "E0_" + nic,
-        passwordHash,
-        userName,
-        address,
-        nic,
-        userRole,
-        joinedDate,
-        isAvailable,
-        jobTitle,
-        birthDay,
-        contactNum,
-        email,
-        image
-    });
+        const _id = new mongoose.Types.ObjectId();
+        const empID = "E0" + _id.toString().substring(1, 10);
 
-    const result = await addEmployeeService(employee);
+        const employee = new IEmployee({
+            _id,
+            name,
+            orgID,
+            empID,
+            passwordHash,
+            userName,
+            address,
+            nic,
+            userRole,
+            joinedDate,
+            isAvailable,
+            jobTitle,
+            birthDay,
+            contactNum,
+            email,
+            image
+        });
 
-    if (result === StatusCode.CREATED) {
-        return res.status(StatusCode.CREATED).json({ "success": "ok" });
-    } else {
-        const error = ValidateErrorRegisterOrg(result);
-        return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+        const result = await addEmployeeService(employee);
+
+        if (result === StatusCode.CREATED) {
+            // Add user to the gcp identity server list
+            await addAdminUserService(email, orgID ?? "", passwordHash, false);
+
+            // Send email to the emoloyee's email address
+            sendEmail("You have been added to Organization",
+                employeeCreationTemplate(name, email, passwordHash), email);
+            return res.status(StatusCode.CREATED).json({ "success": "ok" });
+        } else {
+            const error = ValidateErrorRegisterOrg(result);
+            return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+        }
+    } catch (e: any) {
+        return res.status(StatusCode.FAILED).json({ error: e.message });
     }
 };
 
