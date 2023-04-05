@@ -8,8 +8,9 @@ import jwt_decode, { JwtPayload } from "jwt-decode";
 import sendEmail from '../util/emailSender';
 import { announcmentTemplate } from '../util/emailTemplates';
 import { getOrganization } from '../db/services/OrganizationServices';
-import { getEmployeeEmailListService } from '../db/services/EmployeeServices';
+import { getEmployeeEmailListService, getEmployeeNumberListService } from '../db/services/EmployeeServices';
 import { decodeToken } from '../util/decodeToken';
+import { SendMessageService } from '../db/services/MessageService';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -41,11 +42,12 @@ export const addAnnouncement = async (req: Request, res: Response, next: NextFun
             const organization = await getOrganization(orgId ?? "");
 
             //send emails to employees of the organization
-            const emailList = await getEmployeeEmailListService(orgId ?? "");
+            const emailList = await getEmployeeEmailListService(orgId ?? "", sendTo);
             sendEmail(`${organization.organizationName} Offcial Announcement`, announcmentTemplate(`${organization.organizationName} Offcial Announcement`, message, organization.organizationName), emailList);
 
             //send the announcement as a sms message to the staff members
-            const numberList = await getEmployeeEmailListService(orgId ?? "");
+            const numberList = await getEmployeeNumberListService(orgId ?? "", sendTo);
+            SendMessageService(numberList, message, `${organization.organizationName} Offcial Announcement \n\n` + announcementTitle);
             return res.status(StatusCode.CREATED).json({ "success": "ok" });
         } catch (e: any) {
             console.log(e);

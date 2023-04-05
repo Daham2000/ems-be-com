@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 import { StatusCode } from "../../util/statusCode";
 import IEmployee from '../../db/schemas/EmployeeSchema';
 import IPerformance from '../../db/schemas/PerformanceSchema';
+import { Constants } from "../../util/constant";
 
 //Employee manage services section
 export const addEmployeeService = (employee: Document) => {
@@ -28,14 +29,14 @@ export const deleteEmployeeService = (empID: string) => {
 };
 
 export const getEmployeeService = (orgID: string) => {
-    return IEmployee.find({orgID}).then((res) => {
+    return IEmployee.find({ orgID }).then((res) => {
         return res;
     }).catch((error) => { return error; });
 };
 
-export const getEmployeeEmailListService = (orgID: string) => {
+export const getEmployeeEmailListService = (orgID: string, sendTo: string) => {
     let list = [];
-    return IEmployee.find({ orgID }, { "email": 1, "_id": 0 }).then((res) => {
+    return IEmployee.find({ orgID, userRole: sendTo }, { "email": 1, "_id": 0 }).then((res) => {
         list = res.map((element: any) => {
             return element.email;
         })
@@ -43,11 +44,11 @@ export const getEmployeeEmailListService = (orgID: string) => {
     }).catch((error) => { return error; });
 };
 
-export const getEmployeeNumberListService = (orgID: string): any => {
+export const getEmployeeNumberListService = (orgID: string, sendTo: string): any => {
     let list = [];
-    return IEmployee.find({ orgID }, { "contactNum": 1, "_id": 0 }).then((res) => {
+    return IEmployee.find({ orgID, userRole: sendTo }, { "contactNum": 1, "_id": 0 }).then((res) => {
         list = res.map((element: any) => {
-            return element.email;
+            return element.contactNum;
         })
         return list;
     }).catch((error) => { return error; });
