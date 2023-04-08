@@ -32,6 +32,6 @@ app.listen(port, () => {
     // Initialize the default app
     let admin = require('firebase-admin');
     let app = admin.initializeApp({
-        credential: admin.credential.cert("D:/Esoft/Project/gcp/ems-pro-com-4cf5781adc9c.json")
+        credential: admin.credential.cert("./ems-pro-com-4cf5781adc9c.json")
     });
 });
