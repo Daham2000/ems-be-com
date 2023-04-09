@@ -7,11 +7,16 @@ import perRoutes from './routes/PerformanceRoutes';
 import hoRoutes from './routes/HolidayRoutes';
 import motivationRoutes from './routes/MotivationRoutes';
 import AnnouncementRoutes from './routes/AnnouncementRoutes';
+import cors from 'cors';
 
 dotenv.config()
 
 const app = express();
-const port = process.env.APP_PORT;
+const port = process.env.APP_PORT || 8080;
+
+app.use(cors({
+    origin: '*'
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -32,6 +37,6 @@ app.listen(port, () => {
     // Initialize the default app
     let admin = require('firebase-admin');
     let app = admin.initializeApp({
-        credential: admin.credential.cert("D:/Esoft/Project/gcp/ems-pro-com-4cf5781adc9c.json")
+        credential: admin.credential.cert("./ems-pro-com-4cf5781adc9c.json")
     });
 });

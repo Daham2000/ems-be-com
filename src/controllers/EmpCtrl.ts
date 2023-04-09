@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, deletePerformanceReportService, getEmployeeService, getPerformanceReportService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, deletePerformanceReportService, getEmployeeService, getPerformanceReportService, getSingleEmployeeService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -18,12 +18,30 @@ export const ValidateErrorRegisterOrg = (result: any) => {
 };
 
 export const getEmployeeList = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    const decoded = decodeToken(token ?? "");
-    const orgId = decoded.orgId;
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgId = decoded.orgId;
 
-    const list = await getEmployeeService(orgId ?? "");
-    return res.status(StatusCode.SUCCESS).json(list);
+        const list = await getEmployeeService(orgId ?? "");
+        return res.status(StatusCode.SUCCESS).json(list);
+    } catch (e) {
+        return res.status(401).json({ error: 'unauthenticated' });
+    }
+};
+
+export const getSingleEmployeeDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgId = decoded.orgId;
+        const email = decoded.email;
+        
+        const employee = await getSingleEmployeeService(orgId ?? "", email ?? "");
+        return res.status(StatusCode.SUCCESS).json(employee);
+    } catch (e) {
+        return res.status(401).json({ error: 'unauthenticated' });
+    }
 };
 
 export const addEmployee = async (req: Request, res: Response, next: NextFunction) => {

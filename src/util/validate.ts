@@ -4,18 +4,18 @@ import validateUserToken from './validateUser';
 
 export const ValidateJoi = (schema: ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        if (schema !== Schemas.organization.create) {
-            if (!req.headers.authorization) {
-                return res.status(401).json({ error: 'unauthenticated' });
-            }
-            const token = req.headers.authorization.split(' ')[1];
-
-            const validationRes = await validateUserToken(token);
-            if (validationRes === 401) {
-                return res.status(401).json({ error: 'unauthenticated' });
-            }
-        }
         try {
+            if (schema !== Schemas.organization.create) {
+                if (!req.headers.authorization) {
+                    return res.status(401).json({ error: 'unauthenticated' });
+                }
+                const token = req.headers.authorization.split(' ')[1];
+    
+                const validationRes = await validateUserToken(token);
+                if (validationRes === 401) {
+                    return res.status(401).json({ error: 'unauthenticated' });
+                }
+            }
             await schema.validateAsync(req.body);
             next();
         } catch (error) {

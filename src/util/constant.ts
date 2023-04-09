@@ -4,4 +4,12 @@ export class Constants {
     public static PmRole = "pmRole";
     public static AdminRole = "adminRole";
     public static devRole = "devRole";
+
+    public static UserRoles = [
+        Constants.QaRole,
+        Constants.BaRole,
+        Constants.PmRole,
+        Constants.AdminRole,
+        Constants.devRole
+    ]
 }
