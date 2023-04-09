@@ -11,7 +11,7 @@ import AnnouncementRoutes from './routes/AnnouncementRoutes';
 dotenv.config()
 
 const app = express();
-const port = process.env.APP_PORT;
+const port = process.env.APP_PORT || 8080;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
