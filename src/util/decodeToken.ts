@@ -4,6 +4,7 @@ export interface JwtPayloadType {
     iss?: string;
     admin?: boolean;
     orgId?: string;
+    email?: string;
     sub?: string;
     aud?: string[] | string;
     exp?: number;

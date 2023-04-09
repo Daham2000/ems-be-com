@@ -34,6 +34,12 @@ export const getEmployeeService = (orgID: string) => {
     }).catch((error) => { return error; });
 };
 
+export const getSingleEmployeeService = (orgID: string, email: string) => {
+    return IEmployee.findOne({ orgID, email }).then((res) => {
+        return res;
+    }).catch((error) => { return error; });
+};
+
 export const getEmployeeEmailListService = (orgID: string, sendTo: string) => {
     let list = [];
     return IEmployee.find({ orgID, userRole: sendTo }, { "email": 1, "_id": 0 }).then((res) => {
