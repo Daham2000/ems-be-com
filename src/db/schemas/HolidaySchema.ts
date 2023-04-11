@@ -7,7 +7,7 @@ const HolidaySchema: Schema = new Schema(
     {
         holiId: { type: String, required: true, unique: true },
         holidayTitle: { type: String, required: true },
-        eventDate: { type: String, required: true },
+        eventDate: { type: Date, required: true },
         orgId: { type: String, required: true }
     },
     {

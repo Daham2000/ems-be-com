@@ -18,24 +18,27 @@ export const addHoliday = async (req: Request, res: Response, next: NextFunction
         const orgId = decoded.orgId;
 
         const _id = new mongoose.Types.ObjectId();
-        const holiId = "HOLI" + _id.toString().substring(1, 10);
+        const holiId = "HOLI" + _id.toString().substring(1, 10);        
+        const date = new Date(eventDate);
+        
         const holiday = new IHolidayModel({
             _id,
             holiId,
             holidayTitle,
-            eventDate,
+            eventDate: date,
             orgId
         });
 
         const result = await addHolidayService(holiday);
-
+        
         if (result === StatusCode.CREATED) {
             return res.status(StatusCode.CREATED).json({ "success": "ok" });
         } else {
-            const error = ValidateErrorRegisterOrg(result);
-            return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
+            return res.status(StatusCode.DATA_VALIDATION_ERROR).json({error: "Validate Error"});
         }
     } catch (e) {
+        console.log(e);
+        
         return res.status(StatusCode.FAILED).json({ e });
     }
 };
@@ -47,7 +50,7 @@ export const getHolidayList = async (req: Request, res: Response, next: NextFunc
         const orgId = decoded.orgId;
 
         const holidayList = await getHolidayService(orgId ?? "");
-        return res.status(StatusCode.SUCCESS).json({ holidayList });
+        return res.status(StatusCode.SUCCESS).json(holidayList);
     } catch (e: any) {
         return res.status(StatusCode.FAILED).json({ e });
     }
