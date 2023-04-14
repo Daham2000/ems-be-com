@@ -81,7 +81,6 @@ export const Schemas = {
         }),
         update: Joi.object<any>({
             empID: Joi.string().required(),
-            perId: Joi.string().required(),
             createdAt: Joi.string().required(),
             updatedAt: Joi.string().required(),
             _id: Joi.string().required(),
@@ -107,6 +106,9 @@ export const Schemas = {
         add: Joi.object<any>({
             empId: Joi.string().required(),
             description: Joi.string().required()
+        }),
+        get: Joi.object<any>({
+
         })
     },
     announcement: {
