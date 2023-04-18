@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import IEmployee from '../db/schemas/EmployeeSchema';
 import IPerformance from '../db/schemas/PerformanceSchema';
 import IMotivationRequest from '../db/schemas/MotivationSchema';
-import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, deletePerformanceReportService, getEmployeeService, getPerformanceReportService, getSingleEmployeeService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
+import { addEmployeeService, addPerformanceReportService, deleteEmployeeService, deletePerformanceReportService, getEmployeeService, getMotivationsService, getOneEmployeeService, getPerformanceReportService, getSingleEmployeeService, updateEmployeeService, updatePerformanceReportService } from '../db/services/EmployeeServices';
 import { addMotivationReqService } from "../db/services/EmployeeServices";
 import { StatusCode } from '../util/statusCode';
 import { uuid } from 'uuidv4';
@@ -11,6 +11,7 @@ import { decodeToken } from '../util/decodeToken';
 import { addAdminUserService } from '../db/services/ManageUserService';
 import sendEmail from '../util/emailSender';
 import { employeeCreationTemplate } from '../util/emailTemplates';
+import calculateEmployeeRating from '../util/performanceCalc';
 
 export const ValidateErrorRegisterOrg = (result: any) => {
     return result.keyPattern.email ? { "message": "Email can't be duplicate" } :
@@ -36,8 +37,19 @@ export const getSingleEmployeeDetails = async (req: Request, res: Response, next
         const decoded = decodeToken(token ?? "");
         const orgId = decoded.orgId;
         const email = decoded.email;
-        
+
         const employee = await getSingleEmployeeService(orgId ?? "", email ?? "");
+        return res.status(StatusCode.SUCCESS).json(employee);
+    } catch (e) {
+        return res.status(401).json({ error: 'unauthenticated' });
+    }
+};
+
+export const getOneEmployeeDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const empID = req.query.empID;
+
+        const employee = await getOneEmployeeService(empID?.toString() ?? "");
         return res.status(StatusCode.SUCCESS).json(employee);
     } catch (e) {
         return res.status(401).json({ error: 'unauthenticated' });
@@ -122,6 +134,7 @@ export const updateEmployee = async (req: Request, res: Response, next: NextFunc
     };
 
     const result = await updateEmployeeService(employee);
+    console.log(result);
 
     if (result === StatusCode.SUCCESS) {
         return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
@@ -157,7 +170,8 @@ export const addPerformance = async (req: Request, res: Response, next: NextFunc
     const { empID, month, year, qualityOfWork, speedRate,
         trustRate, givenTargets, achivedTargets, description } = req.body;
 
-    const overviewRate = speedRate + trustRate + qualityOfWork;
+    const overviewRate = calculateEmployeeRating(qualityOfWork, speedRate,
+        trustRate, givenTargets, achivedTargets);
 
     const report = {
         _id: new mongoose.Types.ObjectId(),
@@ -187,15 +201,17 @@ export const getPerformanceReportList = async (req: Request, res: Response, next
 
 export const updatePerformanceReport = async (req: Request, res: Response, next: NextFunction) => {
     const { _id, empID, month, year, qualityOfWork, speedRate,
-        trustRate, givenTargets, achivedTargets, description, overviewRate } = req.body;
+        trustRate, givenTargets, achivedTargets, description } = req.body;
+
+    const overviewRate = calculateEmployeeRating(qualityOfWork, speedRate,
+        trustRate, givenTargets, achivedTargets);
 
     const employee = {
-        _id,
-        perId: empID + "_" + month + year, year, empID, month, qualityOfWork, speedRate,
+        qualityOfWork, speedRate,
         trustRate, givenTargets, achivedTargets, description, overviewRate
     };
 
-    const result = await updatePerformanceReportService(employee);
+    const result = await updatePerformanceReportService(_id, employee);
 
     if (result === StatusCode.SUCCESS) {
         return res.status(StatusCode.SUCCESS).json({ "success": "ok" });
@@ -223,3 +239,16 @@ export const addMotivationRequest = async (req: Request, res: Response, next: Ne
         return res.status(StatusCode.DATA_VALIDATION_ERROR).json({ error });
     }
 }
+
+export const getMotivationReqList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        const decoded = decodeToken(token ?? "");
+        const orgId = decoded.orgId;
+
+        const list = await getMotivationsService(orgId ?? "");
+        return res.status(StatusCode.SUCCESS).json(list);
+    } catch (e) {
+        return res.status(401).json({ error: 'unauthenticated' });
+    }
+};

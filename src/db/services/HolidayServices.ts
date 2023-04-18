@@ -11,7 +11,12 @@ export const addHolidayService = (holiday: Document) => {
 
 export const getHolidayService = (orgId: string): Promise<Document[]> => {
     return IHoliday
-        .find({orgId})
+        .find({
+            orgId,
+            eventDate: {
+                $gte: new Date(),
+            }
+        })
         .then((res) => { return res; })
         .catch((error) => { return error; });
 };

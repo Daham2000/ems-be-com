@@ -3,6 +3,7 @@ import { StatusCode } from "../../util/statusCode";
 import IEmployee from '../../db/schemas/EmployeeSchema';
 import IPerformance from '../../db/schemas/PerformanceSchema';
 import { Constants } from "../../util/constant";
+import MotivationSchema from "../schemas/MotivationSchema";
 
 //Employee manage services section
 export const addEmployeeService = (employee: Document) => {
@@ -16,7 +17,7 @@ export const addEmployeeService = (employee: Document) => {
 
 export const updateEmployeeService = (employee: any) => {
     return IEmployee
-        .updateOne(employee)
+        .findByIdAndUpdate(employee._id, employee)
         .then((res) => { return StatusCode.SUCCESS; })
         .catch((error) => { return error; });
 };
@@ -40,9 +41,15 @@ export const getSingleEmployeeService = (orgID: string, email: string) => {
     }).catch((error) => { return error; });
 };
 
+export const getOneEmployeeService = (empID: string) => {
+    return IEmployee.findOne({ empID }).then((res) => {
+        return res;
+    }).catch((error) => { return error; });
+};
+
 export const getEmployeeEmailListService = (orgID: string, sendTo: string) => {
     let list = [];
-    return IEmployee.find({ orgID, userRole: sendTo }, { "email": 1, "_id": 0 }).then((res) => {
+    return IEmployee.find(sendTo === "All Employees" ? { orgID } : { orgID, userRole: sendTo }, { "email": 1, "_id": 0 }).then((res) => {
         list = res.map((element: any) => {
             return element.email;
         })
@@ -52,7 +59,7 @@ export const getEmployeeEmailListService = (orgID: string, sendTo: string) => {
 
 export const getEmployeeNumberListService = (orgID: string, sendTo: string): any => {
     let list = [];
-    return IEmployee.find({ orgID, userRole: sendTo }, { "contactNum": 1, "_id": 0 }).then((res) => {
+    return IEmployee.find(sendTo === "All Employees" ? { orgID } : { orgID, userRole: sendTo }, { "contactNum": 1, "_id": 0 }).then((res) => {
         list = res.map((element: any) => {
             return element.contactNum;
         })
@@ -74,9 +81,9 @@ export const addPerformanceReportService = async (report: any): Promise<number> 
     }
 };
 
-export const updatePerformanceReportService = (report: any) => {
+export const updatePerformanceReportService = (_id: string, report: any) => {
     return IPerformance
-        .updateOne(report)
+        .findByIdAndUpdate(_id, report)
         .then((res) => { return StatusCode.SUCCESS; })
         .catch((error) => { return error; });
 };
@@ -100,4 +107,10 @@ export const addMotivationReqService = (motiReq: Document) => {
         .save()
         .then((res) => { return StatusCode.CREATED; })
         .catch((error) => { return error; });
+};
+
+export const getMotivationsService = (orgID: string) => {
+    return MotivationSchema.find({ orgID }).then((res) => {
+        return res;
+    }).catch((error) => { return error; });
 };
